@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glitch Word Search - Hard Mode</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: #0ff;
+      font-family: monospace;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 8px #f0f;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(13, 2rem);
+      grid-gap: 0.2rem;
+      transition: transform 1s ease-in-out;
+    }
+    .letter {
+      width: 2rem;
+      height: 2rem;
+      background: #111;
+      color: #0ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #0ff;
+      user-select: none;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .letter.found {
+      background: #0f0;
+      color: black;
+      animation: flash 0.3s;
+    }
+    @keyframes flash {
+      0% { background: #f0f; }
+      100% { background: #0f0; }
+    }
+    .good-job {
+      position: absolute;
+      top: 10%;
+      font-size: 2rem;
+      color: #fff;
+      animation: jump 1s ease;
+    }
+    @keyframes jump {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-80px); }
+      100% { transform: translateY(0); }
+    }
+    audio { display: none; }
+  </style>
+</head>
+<body>
+  <div class="title">GLITCH WORD SEARCH - HARD MODE</div>
+  <div class="grid" id="grid"></div>
+  <div id="effect"></div>
+  <audio id="bgm" src="CREATION_OF_HATRED.mp3" autoplay loop></audio>
+
+  <script>
+    const letters = [
+      "CHEESEPOPLE",
+      "HNCESAFCREC",
+      "IWYOGHURIEL",
+      "KATRSEPAOCL",
+      "ETOCAMKILNPN",
+      "NCRHITLGOAM",
+      "MHRHMEIGRAE",
+      "IWATERMELONA",
+      "LLCEACORNHIL",
+      "LOSWTEATSAPT",
+      "EABROCCOLIEH",
+      "TRPUMPKINIRTS"
+    ];
+
+    const words = [
+      "CHEESE", "NICE", "YOGHURT", "WATERMELON",
+      "ACORN", "BROCCOLI", "PUMPKIN", "TEA", "TREATS"
+    ];
+
+    const foundWords = new Set();
+    const grid = document.getElementById("grid");
+
+    // Create letter grid
+    letters.forEach(row => {
+      [...row].forEach(char => {
+        const span = document.createElement("div");
+        span.classList.add("letter");
+        span.textContent = char;
+        grid.appendChild(span);
+      });
+    });
+
+    // Dummy word finding simulation (you'll want to implement real selection logic)
+    document.querySelectorAll('.letter').forEach(el => {
+      el.addEventListener('click', () => {
+        el.classList.add('found');
+        checkWord(el.textContent);
+      });
+    });
+
+    function checkWord(letter) {
+      // Simulate a found word every 6 clicks (demo purpose)
+      const randWord = words[Math.floor(Math.random() * words.length)];
+      if (!foundWords.has(randWord)) {
+        foundWords.add(randWord);
+        showGoodJob();
+        if (foundWords.size === words.length) {
+          alert("YOU WIN!");
+        }
+      }
+    }
+
+    function showGoodJob() {
+      const msg = document.createElement("div");
+      msg.className = "good-job";
+      msg.textContent = "Good job!";
+      document.body.appendChild(msg);
+      setTimeout(() => msg.remove(), 1200);
+    }
+
+    // Rotate board every 50 seconds
+    let angle = 0;
+    setInterval(() => {
+      angle += 360;
+      grid.style.transform = `rotate(${angle}deg)`;
+    }, 50000);
+  </script>
+</body>
+</html>
